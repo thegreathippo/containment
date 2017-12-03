@@ -1,0 +1,84 @@
+#: kivy 1.10.0
+
+<MainScreen@Screen>:
+    red: 0.0
+    green: 0.0
+    blue: 0.1
+    alpha: 1.0
+
+    canvas.before:
+        Color:
+            rgba: root.red, root.green, root.blue, root.alpha
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<StartScreen@MainScreen>:
+    name: "start"
+    AnchorLayout:
+        BoxLayout:
+            size_hint: 0.4, 0.5
+            orientation: "vertical"
+            Button:
+                text: "New Game"
+                on_press: root.manager.current = "gamemap"
+            Button:
+                text: "Load Game"
+            Button:
+                text: "Settings"
+            Button:
+                text: "Quit"
+
+<GameLabel@Label>
+    text_size: self.size
+    halign: "left"
+    valign: "top"
+    font_name: "RobotoMono-Regular"
+
+
+<TopBar@BoxLayout>
+    orientation: "horizontal"
+    size_hint_y: 0.1
+    GameLabel:
+        id: date
+        text: " " + app.time + " (UTC) " + app.date
+
+
+<EventLog@GameLabel>
+    size_hint_y: 0.3
+    text: " Event Log"
+
+
+<GameMap@MainScreen>
+    red: 0.0
+    green: 0.0
+    blue: 0.0
+    name: "gamemap"
+    on_enter: app.new_game()
+
+    BoxLayout:
+        orientation: "vertical"
+
+        TopBar:
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                GameLabel:
+                    text: app.stats
+                Button:
+                    text: "Button Set #1"
+                    on_press: app.add_funds()
+            BoxLayout:
+                orientation: "vertical"
+                Button:
+                    text: "Button Set #2"
+            BoxLayout:
+                orientation: "vertical"
+                Button:
+                    text: "Button Set #3"
+        EventLog:
+
+<MainWindow>:
+    StartScreen:
+    GameMap:
