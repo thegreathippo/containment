@@ -1,9 +1,9 @@
 #: kivy 1.10.0
 
 <MainScreen@Screen>:
-    red: 0.0
-    green: 0.0
-    blue: 0.1
+    red: 0.2
+    green: 0.2
+    blue: 0.8
     alpha: 1.0
 
     canvas.before:
@@ -12,6 +12,8 @@
         Rectangle:
             pos: self.pos
             size: self.size
+            source: "game/background.png"
+
 
 <StartScreen@MainScreen>:
     name: "start"
@@ -29,20 +31,168 @@
             Button:
                 text: "Quit"
 
-<GameLabel@Label>
+<TechLabel@Label>
+    font_name: "game/ShareTechMono-Regular"
+
+<VCRLabel@Label>
+    font_name: "game/VCR_OSD_MONO_1.001"
+
+<VCRButton@Button>
+    background_color: 0.6, 0.6, 0.99, 1.0
+    font_name: "game/VCR_OSD_MONO_1.001"
+
+<GameLabel@VCRLabel>
     text_size: self.size
     halign: "left"
     valign: "top"
-    font_name: "RobotoMono-Regular"
-
 
 <TopBar@BoxLayout>
     orientation: "horizontal"
-    size_hint_y: 0.1
-    GameLabel:
+    size_hint_y: 0.05
+
+    red: 0.1
+    green: 0.1
+    blue: 0.5
+    alpha: 1.0
+
+    canvas.before:
+        Color:
+            rgba: 0.4, 0.4, 0.8, 1.0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: root.red, root.green, root.blue, root.alpha
+        Rectangle:
+            pos: self.pos[0], self.pos[1] + 1
+            size: self.size[0], self.size[1]
+
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint_x: 0.5
+        Image:
+            source: "game/scp_icon.png"
+            size_hint_x: 0.25
+
+        TechLabel:
+            text: "USER"
+            size_hint_x: 0.75
+
+    TechLabel:
         id: date
         text: " " + app.time + " (UTC) " + app.date
 
+
+
+
+<TabMenu@TabbedPanel>
+    do_default_tab: False
+    tab_width: root.width * 0.33
+
+    TabbedPanelItem:
+        font_name: "game/VCR_OSD_MONO_1.001"
+        text: "ACTION"
+        background_normal: "game/tab.png"
+        background_down: "game/tab_pressed.png"
+        BuyMenu:
+
+    TabbedPanelItem:
+        font_name: "game/VCR_OSD_MONO_1.001"
+        text: "ASSIGN"
+        background_normal: "game/tab.png"
+        background_down: "game/tab_pressed.png"
+        JobMenu:
+
+    TabbedPanelItem:
+        font_name: "game/VCR_OSD_MONO_1.001"
+        background_normal: "game/tab.png"
+        background_down: "game/tab_pressed.png"
+        text: "RESEARCH"
+
+
+<BuyMenu@BoxLayout>
+    orientation: "vertical"
+    VCRButton:
+        text: "ACQUIRE ANOMALY"
+        on_press: app.session.acquire_anomaly()
+
+    VCRButton:
+        text: "HIRE PERSONNEL"
+        on_press: app.session.foundation.personnel += 1
+    VCRButton:
+        text: "BUILD SITE"
+        on_press: app.session.foundation.sites += 1
+    VCRButton:
+    VCRButton:
+    VCRButton:
+    VCRButton:
+    VCRButton:
+    VCRButton:
+    VCRButton:
+
+
+<Job@BoxLayout>
+    orientation: "horizontal"
+    text: "AGENT"
+    VCRLabel:
+        canvas.before:
+            Rectangle:
+                pos: self.pos[0] + 1, self.pos[1] + 1
+                size: self.size[0] - 2, self.size[1] - 2
+                source: "game/tab_pressed.png"
+        text: root.text
+    BoxLayout:
+        size_hint_x: 0.1
+        orientation: "vertical"
+        VCRButton:
+            text: "+"
+
+        VCRButton:
+            text: "-"
+
+
+<JobMenu@BoxLayout>
+    orientation: "vertical"
+    Job:
+    Job:
+        text: "RESEARCHER"
+    Job:
+    Job:
+    Job:
+    Job:
+    Job:
+    Job:
+
+<FoundationStatus@BoxLayout>
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.width, self.width
+            source: "game/scp2.png"
+
+    orientation: "vertical"
+    GameLabel:
+        size_hint_y: 0.1
+        text: "THE FOUNDATION"
+        halign: "center"
+    GameLabel:
+        text: app.fs
+
+<WorldStatus@BoxLayout>
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.width, self.width
+            source: "game/globe.png"
+
+    orientation: "vertical"
+    GameLabel:
+        size_hint_y: 0.1
+        text: "THE WORLD"
+        halign: "center"
+    GameLabel:
+        text: app.ws
 
 <EventLog@GameLabel>
     size_hint_y: 0.3
@@ -50,9 +200,11 @@
 
 
 <GameMap@MainScreen>
-    red: 0.0
-    green: 0.0
-    blue: 0.0
+    red: 0.2
+    green: 0.2
+    blue: 0.8
+    alpha: 1.0
+
     name: "gamemap"
     on_enter: app.new_game()
 
@@ -62,23 +214,15 @@
         TopBar:
         BoxLayout:
             orientation: "horizontal"
-            BoxLayout:
-                orientation: "vertical"
-                GameLabel:
-                    text: app.stats
-                Button:
-                    text: "Button Set #1"
-                    on_press: app.add_funds()
-            BoxLayout:
-                orientation: "vertical"
-                Button:
-                    text: "Button Set #2"
-            BoxLayout:
-                orientation: "vertical"
-                Button:
-                    text: "Button Set #3"
+            FoundationStatus:
+            TabMenu:
+                size_hint_x: 1.5
+            WorldStatus:
         EventLog:
+
 
 <MainWindow>:
     StartScreen:
     GameMap:
+
+
